@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="UNCC Notes App">
-        <title>UNCC Notes App - New Note</title>
+        <meta name="description" content="5Clouds Notes App">
+        <title>5Clouds Notes App - New Note</title>
         <!-- styles -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
     </head>
     <body>
       <nav>
@@ -15,7 +15,7 @@
 	<a href={{ url_for('logout') }}>Logout</a>
       </nav>
 
-        <h1>Welcome {{user}} to the 49er Notes App!</h1>
+        <h1>Welcome {{user}} to the 5Clouds Notes App!</h1>
 
     {% if note %}
         <form action="{{ url_for('update_note', note_id=note.id) }}" method="post">
