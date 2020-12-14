@@ -1,4 +1,4 @@
-# FLASK Tutorial 1 -- We show the bare bones code to get an app up and running
+
 
 # imports
 import os                 # os is used to get environment variables IP & PORT
@@ -20,16 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 app.config['SECRET_KEY'] = 'SE3155'
 db.init_app(app)
 with app.app_context():
-    db.create_all()   # run under the app context
-
-#notes = {1: {'title': 'First note', 'text': 'This is my first note', 'date': '10-1-2020'},
- #            2: {'title': 'Second note', 'text': 'This is my second note', 'date': '10-2-2020'},
-  #           3: {'title': 'Third note', 'text': 'This is my third note', 'date': '10-3-2020'}
-   #          }
-
-# @app.route is a decorator. It gives the function "index" special powers.
-# In this case it makes it so anyone going to "your-url/" makes this function
-# get called. What it returns is what is shown as the web page
+    db.create_all()   
 
 
 @app.route('/')
@@ -200,7 +191,32 @@ def new_comment(note_id):
         return redirect(url_for('login'))
 
 
+@app.route('/notes/like/<note_id>', methods = ['POST'])
+def like_note(note_id):
+    if session.get('user'):
+        note = db.session.query(Note).filter_by(id=note_id).one()
+        note.likes += 1
+        db.session.commit()
+
+        return redirect(url_for('get_notes'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/notes/<note_id>/comment/<comment_id>', methods=['POST'])
+def delete_comment(comment_id, note_id):
+    if session.get('user'):
+        my_comment = db.session.query(Comment).filter_by(id=comment_id).one()
+        db.session.delete(my_comment)
+        db.session.commit() 
+
+        return redirect(url_for('get_note', note_id=note_id))
+    else:
+        return redirect(url_for('login'))
+
+
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
+
 
 
 # To see the web page in your web browser, go to the url,
