@@ -17,12 +17,16 @@
         <h1>Welcome {{user}} to the 5Clouds Notes App!</h1>
         <h1>Listing notes</h1>
 
-    
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Date</th>
-            </tr>
+	<h2>Search Menu</h2>
+	<p>Start to type for a specific category inside the search bar to "filter" the search options.</p>
+
+	<div class="row">
+ 	 <div class="left" style="background-color:#bbb;">
+   	 <h2>Menu</h2>
+   	 <input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">
+  	  <ul id="myNotes">
+   	   <li><table>
+
             {% for note in notes %}
            <!--- <tr>
                 <td><a href="{{ url_for('get_note', note_id=note.id) }}">{{ note.title }}</a></td>
@@ -59,5 +63,28 @@
             </tr>
             {% endfor %}
         </table>
+</li>
+  	  </ul>
+ 	 </div>
+	 <script>
+		function myFunction() {
+ 		 var input, filter, ul, li, a, i;
+	 	 input = document.getElementById("mySearch");
+ 		 filter = input.value.toUpperCase();
+ 		 ul = document.getElementById("myNotes");
+ 		 li = ul.getElementsByTagName("li");
+ 		 for (i = 0; i < li.length; i++) {
+ 		   a = li[i].getElementsByTagName("a")[0];
+  		  if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+ 		     li[i].style.display = "";
+ 		   } else {
+ 		     li[i].style.display = "none";
+    }
+  }
+}
+</script>
+
+    
+       
     </body>
 </html>
