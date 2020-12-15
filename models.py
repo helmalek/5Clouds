@@ -17,6 +17,17 @@ class Note(db.Model):
         self.date = date
         self.user_id = user_id
 
+class Trash(db.Model):
+    id = db.Column("id", db.Integer, primary_key=True)
+    title = db.Column("title", db.String(200))
+    text = db.Column("text", db.String(100))
+    # can create a foreign key; referencing the id variable in the User class, so that is why it is lowercase u
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    def __init__(self, title, text, user_id):
+        self.title = title
+        self.text = text
+        self.user_id = user_id
 class User(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     first_name = db.Column("first_name", db.String(100))
@@ -46,3 +57,7 @@ class Comment(db.Model):
         self.content = content
         self.note_id = note_id
         self.user_id = user_id
+
+
+
+

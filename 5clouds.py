@@ -6,7 +6,7 @@ import bcrypt
 from flask import Flask   # Flask is the web app that we will customize
 from flask import render_template, request, redirect, url_for, session
 from database import db
-from models import Note as Note
+from models import Note as Note, Trash
 from models import User as User
 from models import Comment as Comment
 from forms import RegisterForm, LoginForm, CommentForm
@@ -102,19 +102,40 @@ def update_note(note_id):
             return render_template('new.html', note=my_note, user=session['user'])
     else:
         return redirect(url_for('login'))
-
-@app.route('/notes/delete/<note_id>', methods=['POST'])
+@app.route('/notes/delete/<note_id>', methods=['GET', 'POST'])
 def delete_note(note_id):
-
+    # check if a user is saved in session
     if session.get('user'):
-        
-        my_note = db.session.query(Note).filter_by(id=note_id).one()
+        my_note = trash = db.session.query(Note).filter_by(id=note_id).one()
+        # get title data
+        title = trash.title
+        # get text data
+        text = trash.text
+        new_trash = Trash(title, text, session['user_id'])
+        db.session.add(new_trash)
+        db.session.commit()
+
         db.session.delete(my_note)
         db.session.commit()
 
         return redirect(url_for('get_notes'))
     else:
+        # user is not in session redirect to login
         return redirect(url_for('login'))
+
+
+@app.route('/trash')
+def get_trash():
+    # get user from database
+    # check if a user is saved in session
+    if session.get('user'):
+        # get notes from database
+        my_trash = db.session.query(Trash).filter_by(user_id=session['user_id']).all()
+
+        return render_template('trash.html', trash=my_trash, user=session['user'])
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -191,11 +212,10 @@ def new_comment(note_id):
         return redirect(url_for('login'))
 
 
-@app.route('/notes/like/<note_id>', methods = ['POST'])
-def like_note(note_id):
+@app.route('/notes/favorite/<note_id>', methods = ['POST'])
+def favorite_note(note_id):
     if session.get('user'):
         note = db.session.query(Note).filter_by(id=note_id).one()
-        note.likes += 1
         db.session.commit()
 
         return redirect(url_for('get_notes'))
@@ -213,6 +233,9 @@ def delete_comment(comment_id, note_id):
         return redirect(url_for('get_note', note_id=note_id))
     else:
         return redirect(url_for('login'))
+
+
+
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
