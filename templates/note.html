@@ -9,14 +9,11 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='forms1.css') }}">
         <nav>
-            <a href="{{ url_for('index') }}"> Home</a> 
-            <a href="{{ url_for('get_notes') }}"> My Notes</a> 
-            <a href="{{ url_for('new_note') }}"> Add Note</a> ||
-            <a href="{{ url_for('get_trash') }}"> Trash</a>
+            <a href="{{ url_for('index') }}">Home</a> ||
+            <a href="{{ url_for('get_notes') }}">My Notes</a> ||
+            <a href="{{ url_for('new_note') }}">Add Note</a> ||
+	    <a href={{ url_for('logout') }}>Logout</a>
        </nav>
-        <nav>
-            <a href="{{ url_for('logout') }}"> Logout</a>
-        </nav>
     </head>
     <body>
         <h1>Welcome {{user}} to the 5Clouds Notes App!</h1>
@@ -43,16 +40,30 @@
                 <h1>Comments</h2>
                 <ul>
                 {% for comment in note.comments %}
-                <table>
-                    <td><li>{{ comment.content }}</li></td>
-                    {% if (comment.user_id == user) %}
-                        <td> 
+                <li><table>
+                    <tr>
+                        <td>
+                            {{ comment.content }}
+                        </td>
+                        <td>
                             <form action="{{ url_for('delete_comment', comment_id=comment.id, note_id=note.id) }}" method="post">
                                 <input type="submit" value="Delete">
                             </form>
+
                         </td>
-                    {% endif %}
-                </table>
+                    </tr>
+                </table></li>
+                  
+                  
+
+                <!-- {% if (comment.user_id == user) %}-->
+                
+                   
+                      
+                        
+                  <!--- {% endif %}-->
+               
+                
                 {% endfor %}
                 </ul>
             {% endif %}
@@ -78,4 +89,6 @@
   </div>
 </form>
     </body>
+
+
 </html>

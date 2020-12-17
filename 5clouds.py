@@ -212,7 +212,7 @@ def new_comment(note_id):
         return redirect(url_for('login'))
 
 
-@app.route('/notes/favorite/<note_id>', methods = ['POST'])
+@app.route('/notes/<note_id>/favorite', methods = ['POST'])
 def favorite_note(note_id):
     if session.get('user'):
         note = db.session.query(Note).filter_by(id=note_id).one()
@@ -223,13 +223,13 @@ def favorite_note(note_id):
         return redirect(url_for('login'))
 
 
-@app.route('/notes/<note_id>/comment/<comment_id>', methods=['POST'])
-def delete_comment(comment_id, note_id):
+@app.route('/notes/<note_id>/delete/<comment_id>', methods=['POST'])
+def delete_comment(comment_id,note_id):
     if session.get('user'):
         my_comment = db.session.query(Comment).filter_by(id=comment_id).one()
         db.session.delete(my_comment)
         db.session.commit() 
-
+        
         return redirect(url_for('get_note', note_id=note_id))
     else:
         return redirect(url_for('login'))
